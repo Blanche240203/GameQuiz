@@ -1,7 +1,7 @@
 package fr.eseo.millionaire.model;
 
 public class Joueur {
-    private String pseudo;      // Le pseudo du joueur
+    private final String pseudo;      // Le pseudo du joueur
     private int score;          // Score actuel
     private boolean joker5050;  // Joker 50/50 dispo ?
     private boolean jokerDouble; // Joker double points dispo ?
