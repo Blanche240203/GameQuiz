@@ -75,7 +75,7 @@ public class Joueur {
                 "pseudo='" + pseudo + '\'' +
                 ", score=" + score +
                 ", joker5050=" + joker5050 +
-                ", jokerDouble=" + jokerDouble +
+                ", jokerDoublelkjlkjlkjklj=" + jokerDouble +
                 '}';
     }
 }
