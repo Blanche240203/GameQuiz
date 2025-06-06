@@ -11,7 +11,7 @@ public class Joueur {
     public Joueur(String pseudo) {
         this.pseudo = pseudo;
         this.joker5050 = true;
-        this.jokerDouble = true;
+        this.jokerDouble = true;//
     }
 
 
