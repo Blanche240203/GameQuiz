@@ -76,6 +76,6 @@ public class Joueur {
                 ", score=" + score +
                 ", joker5050=" + joker5050 +
                 ", jokerDouble=" + jokerDouble +
-                '}';  //k
+                '}';
     }
 }
