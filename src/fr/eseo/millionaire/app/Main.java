@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        List<Joueur> joueurs = new ArrayList<>();
 
         System.out.print("Combien de joueurs ? ");
         int nbJoueurs = Integer.parseInt(scanner.nextLine());
 
-        List<Joueur> joueurs = new ArrayList<>();
         for (int i = 1; i <= nbJoueurs; i++) {
             System.out.print("Nom du Joueur " + i + " : ");
             String nom = scanner.nextLine();
