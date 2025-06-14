@@ -13,7 +13,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         List<Joueur> joueurs = new ArrayList<>();
 
-        System.out.print("Souhaitez-vous charger un joueur existant ? (o/n) : ");
+       // System.out.print("Souhaitez-vous charger un joueur existant ? (o/n) : ");
         String choix = scanner.nextLine().toLowerCase();
 
         if (choix.equals("o")) {

@@ -1,3 +1,4 @@
+
 package fr.eseo.millionaire.model;
 
 import fr.eseo.millionaire.model.Joueur;

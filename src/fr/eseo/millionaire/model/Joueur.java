@@ -1,49 +1,83 @@
 package fr.eseo.millionaire.model;
 
+/**
+ * Représente un joueur dans le jeu du Millionaire.
+ * Un joueur possède un pseudo, un score, et deux jokers (50/50 et Double Points).
+ */
 public class Joueur {
     private final String pseudo;      // Le pseudo du joueur
-    private int score;          // Score actuel
-    private boolean joker5050;  // Joker 50/50 dispo ?
-    private boolean jokerDouble; // Joker double points dispo ?
+    private int score;                // Score actuel du joueur
+    private boolean joker5050;        // Indique si le joker 50/50 est disponible
+    private boolean jokerDouble;      // Indique si le joker double points est disponible
 
-    // Constructeur avec pseudo
-    // Constructeur avec pseudo et bonus (optionnel selon le diagramme UML)
+    /**
+     * Constructeur de la classe Joueur.
+     * Initialise le pseudo et rend les jokers disponibles par défaut.
+     * Le score est initialisé à 0.
+     *
+     * @param pseudo Le pseudo choisi par le joueur
+     */
     public Joueur(String pseudo) {
         this.pseudo = pseudo;
+        this.score = 0;
         this.joker5050 = true;
-        this.jokerDouble = true;//
+        this.jokerDouble = true;
     }
 
-
-    // Getters classiques
+    /**
+     * Retourne le pseudo du joueur.
+     *
+     * @return le pseudo du joueur
+     */
     public String getPseudo() {
         return pseudo;
     }
 
+    /**
+     * Retourne le score actuel du joueur.
+     *
+     * @return le score
+     */
     public int getScore() {
         return score;
     }
 
+    /**
+     * Indique si le joker 50/50 est encore disponible pour ce joueur.
+     *
+     * @return true si disponible, false sinon
+     */
     public boolean isJoker5050Disponible() {
         return joker5050;
     }
 
+    /**
+     * Indique si le joker double points est encore disponible pour ce joueur.
+     *
+     * @return true si disponible, false sinon
+     */
     public boolean isJokerDoubleDisponible() {
         return jokerDouble;
     }
 
     /**
-     * Ajoute ou retire des points au score du joueur.
-     * @param points Le nombre de points à ajouter (ou négatif pour retirer).
+     * Ajoute (ou retire si points négatifs) un certain nombre de points au score.
+     * Le score ne peut jamais devenir négatif.
+     *
+     * @param points nombre de points à ajouter (ou négatif pour retirer)
      */
     public void ajouterPoints(int points) {
         this.score += points;
         if (this.score < 0) {
-            this.score = 0; // On évite le score négatif
+            this.score = 0;
         }
     }
 
-    // Utilisation du joker 50/50 si dispo, retourne vrai si utilisé
+    /**
+     * Utilise le joker 50/50 si disponible.
+     *
+     * @return true si le joker a été utilisé, false sinon
+     */
     public boolean utiliserJoker5050() {
         if (joker5050) {
             joker5050 = false;
@@ -52,7 +86,11 @@ public class Joueur {
         return false;
     }
 
-    // Utilisation du joker double points si dispo, retourne vrai si utilisé
+    /**
+     * Utilise le joker double points si disponible.
+     *
+     * @return true si le joker a été utilisé, false sinon
+     */
     public boolean utiliserJokerDouble() {
         if (jokerDouble) {
             jokerDouble = false;
@@ -61,14 +99,22 @@ public class Joueur {
         return false;
     }
 
-    // Remise à zéro du joueur : score à 0, jokers réinitialisés
+    /**
+     * Réinitialise le joueur :
+     * - Score remis à 0
+     * - Jokers remis disponibles
+     */
     public void reset() {
         this.score = 0;
         this.joker5050 = true;
         this.jokerDouble = true;
     }
 
-    // Pour affichage simple
+    /**
+     * Représentation textuelle du joueur.
+     *
+     * @return une chaîne décrivant le joueur
+     */
     @Override
     public String toString() {
         return "Joueur{" +

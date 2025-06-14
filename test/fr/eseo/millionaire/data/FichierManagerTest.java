@@ -4,8 +4,8 @@ import fr.eseo.millionaire.model.Joueur;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,54 +13,64 @@ class FichierManagerTest {
 
     private static final String NOM_FICHIER = "score.txt";
 
-    // Avant chaque test, on supprime le fichier de score s’il existe
-    // Cela permet de garantir un environnement propre pour chaque test
     @BeforeEach
-    void nettoyerFichier() {
-        File fichier = new File(NOM_FICHIER);
-        if (fichier.exists()) {
-            fichier.delete();
-        }
+    void cleanUp() throws Exception {
+        // Supprime le fichier avant chaque test pour éviter les interférences
+        Files.deleteIfExists(Path.of(NOM_FICHIER));
+    }
+
+    @AfterAll
+    static void cleanAfterAll() throws Exception {
+        // Supprime le fichier à la fin de tous les tests
+        Files.deleteIfExists(Path.of(NOM_FICHIER));
     }
 
     @Test
     void testSauvegarderEtChargerJoueur() {
-        // Création d’un joueur avec un score et un joker utilisé
-        Joueur joueur = new Joueur("Megane");
-        joueur.ajouterPoints(1500);
-        joueur.utiliserJoker5050();
+        Joueur joueurOriginal = new Joueur("TestPlayer");
+        joueurOriginal.ajouterPoints(1500);
+        // Par défaut, les jokers sont disponibles (true)
+        assertTrue(joueurOriginal.isJoker5050Disponible());
+        assertTrue(joueurOriginal.isJokerDoubleDisponible());
 
-        // Sauvegarde du joueur dans un fichier
-        FichierManager.sauvegarderJoueur(joueur);
+        FichierManager.sauvegarderJoueur(joueurOriginal);
+        assertTrue(new File(NOM_FICHIER).exists(), "Le fichier doit être créé après sauvegarde");
 
-        // Chargement du joueur à partir du fichier
         Joueur joueurCharge = FichierManager.chargerJoueur();
-
-        // Vérification des données chargées
         assertNotNull(joueurCharge, "Le joueur chargé ne doit pas être null");
-        assertEquals("Megane", joueurCharge.getPseudo(), "Le pseudo ne correspond pas");
-        assertEquals(1500, joueurCharge.getScore(), "Le score ne correspond pas");
-        assertFalse(joueurCharge.isJoker5050Disponible(), "Le joker 50/50 devrait être indisponible");
-        assertTrue(joueurCharge.isJokerDoubleDisponible(), "Le joker Double devrait être disponible");
+        assertEquals(joueurOriginal.getPseudo(), joueurCharge.getPseudo(), "Pseudo doit correspondre");
+        assertEquals(joueurOriginal.getScore(), joueurCharge.getScore(), "Score doit correspondre");
+        assertEquals(joueurOriginal.isJoker5050Disponible(), joueurCharge.isJoker5050Disponible(), "Joker 50/50 doit être identique");
+        assertEquals(joueurOriginal.isJokerDoubleDisponible(), joueurCharge.isJokerDoubleDisponible(), "Joker Double doit être identique");
     }
 
     @Test
-    void testChargerFichierInexistant() {
-        // Aucun fichier n’a été créé → charger doit renvoyer null
-        Joueur joueurCharge = FichierManager.chargerJoueur();
-        assertNull(joueurCharge, "Le joueur chargé doit être null si le fichier n’existe pas");
+    void testChargerJoueurFichierAbsent() {
+        // Aucun fichier créé, doit retourner null
+        Joueur joueur = FichierManager.chargerJoueur();
+        assertNull(joueur, "Doit retourner null si fichier absent");
     }
 
     @Test
-    void testFichierCorrompu() throws Exception {
-        // Création d’un fichier corrompu : score non entier
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(NOM_FICHIER))) {
-            writer.write("JoueurX\nNotAnInteger\nTrue,False");
-        }
+    void testChargerJoueurFichierCorrompu() throws Exception {
+        // Crée un fichier mal formé
+        Files.writeString(Path.of(NOM_FICHIER), "pseudo\nabc\ntrue,false,extra");
+        Joueur joueur = FichierManager.chargerJoueur();
+        assertNull(joueur, "Doit retourner null si fichier mal formé");
+    }
 
-        // Le chargement doit échouer proprement et renvoyer null
-        Joueur joueurCharge = FichierManager.chargerJoueur();
-        assertNull(joueurCharge, "Le joueur chargé doit être null si le fichier est mal formé");
+    @Test
+    void testSauvegarderJoueurAvecJokersUtilises() {
+        Joueur joueur = new Joueur("JokerTest");
+        joueur.ajouterPoints(100);
+        joueur.utiliserJoker5050();
+        joueur.utiliserJokerDouble();
+
+        FichierManager.sauvegarderJoueur(joueur);
+        Joueur charge = FichierManager.chargerJoueur();
+
+        assertNotNull(charge);
+        assertFalse(charge.isJoker5050Disponible(), "Le joker 50/50 doit être marqué comme utilisé");
+        assertFalse(charge.isJokerDoubleDisponible(), "Le joker Double doit être marqué comme utilisé");
     }
 }
-

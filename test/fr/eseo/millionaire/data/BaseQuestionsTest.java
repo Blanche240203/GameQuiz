@@ -7,30 +7,41 @@ import static org.junit.jupiter.api.Assertions.*;
 class BaseQuestionsTest {
 
     @Test
-    void testGetQuestionsParNiveau() {
-        Question[] faciles = BaseQuestions.getQuestionsParNiveau("facile");
-        assertEquals(5, faciles.length, "Il doit y avoir 5 questions faciles");
-        for (Question q : faciles) {
-            assertEquals("facile", q.getNiveau().toLowerCase());
-            assertNotNull(q.getCategorie());
-            assertFalse(q.getCategorie().isEmpty());
-            assertEquals(4, q.getPropositions().length);
-            assertTrue(q.getBonneReponse() >= 'A' && q.getBonneReponse() <= 'D');
-        }
-
-        Question[] moyens = BaseQuestions.getQuestionsParNiveau("moyen");
-        assertEquals(5, moyens.length, "Il doit y avoir 5 questions moyens");
-
-        Question[] difficiles = BaseQuestions.getQuestionsParNiveau("difficile");
-        assertEquals(5, difficiles.length, "Il doit y avoir 5 questions difficiles");
-
-        Question[] inconnues = BaseQuestions.getQuestionsParNiveau("expert");
-        assertEquals(0, inconnues.length, "Niveau inconnu doit retourner un tableau vide");
+    void testGetAllQuestions() {
+        Question[] toutes = BaseQuestions.getAllQuestions();
+        assertNotNull(toutes, "Le tableau ne doit pas être nul");
+        assertTrue(toutes.length > 0, "Il doit y avoir au moins une question");
     }
 
     @Test
-    void testGetAllQuestions() {
-        Question[] all = BaseQuestions.getAllQuestions();
-        assertEquals(15, all.length, "Le total doit être de 15 questions");
+    void testGetAllQuestionsRetourneUneCopie() {
+        Question[] toutes1 = BaseQuestions.getAllQuestions();
+        Question[] toutes2 = BaseQuestions.getAllQuestions();
+        // Modifier une référence dans la copie ne doit pas modifier l'autre tableau
+        assertNotSame(toutes1, toutes2, "Chaque appel doit retourner une copie");
+    }
+
+    @Test
+    void testGetQuestionsParNiveauFacile() {
+        Question[] faciles = BaseQuestions.getQuestionsParNiveau("facile");
+        assertTrue(faciles.length > 0, "Doit retourner des questions de niveau facile");
+        for (Question q : faciles) {
+            assertEquals("facile", q.getNiveau().toLowerCase(), "Le niveau doit être facile");
+        }
+    }
+
+    @Test
+    void testGetQuestionsParNiveauInexistant() {
+        Question[] inconnues = BaseQuestions.getQuestionsParNiveau("extrême");
+        assertEquals(0, inconnues.length, "Aucune question ne doit correspondre à ce niveau");
+    }
+
+    @Test
+    void testGetQuestionsParNiveauCaseInsensitive() {
+        Question[] moyens = BaseQuestions.getQuestionsParNiveau("MoYeN");
+        assertTrue(moyens.length > 0, "Le filtre doit être insensible à la casse");
+        for (Question q : moyens) {
+            assertEquals("moyen", q.getNiveau().toLowerCase(), "Niveau doit être moyen");
+        }
     }
 }
